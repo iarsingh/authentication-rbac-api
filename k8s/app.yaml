@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication-rbac-api
+  labels:
+    app: authentication-rbac-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication-rbac-api
+  template:
+    metadata:
+      labels:
+        app: authentication-rbac-api
+    spec:
+      containers:
+        - name: api
+          image: authentication-rbac-api:local
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /v1/readyz
+              port: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication-rbac-api
+spec:
+  selector:
+    app: authentication-rbac-api
+  ports:
+    - port: 80
+      targetPort: 8080
